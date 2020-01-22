@@ -1,0 +1,10 @@
+---
+# tasks file for sample-mysql
+#
+
+- import_tasks: firewalld.yml
+  tags:
+  - firewall
+- import_tasks: disk.yml
+  tags:
+  - disks

@@ -1,0 +1,28 @@
+- hosts: all
+  become: 1
+  tasks:
+
+
+  - name: set motd
+    include_tasks: motd.yml
+
+  - name: fix sshd_config file
+    lineinfile:
+      regexp: "{{ item.reg }}"
+      line: "{{ item.value }}"
+      path: /etc/ssh/sshd_config
+    loop:
+    - {reg: '^X11Forwarding', value: X11Forwarding yes }
+    - {reg: '^MaxAuthTries',  value: MaxAuthTries 3 }
+    notify: restart sshd
+
+  handlers:
+
+  - listen: restart sshd
+    service:
+      name: sshd
+      state: restarted
+    
+
+
+

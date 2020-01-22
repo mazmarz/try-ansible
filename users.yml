@@ -1,0 +1,52 @@
+- hosts: all
+  become: 1
+  vars_files:
+  - vars/user_list.yml
+  - secret.yml
+  tasks:
+
+  - block:
+
+    - name: create users for webservers
+      user:
+        name: "{{ item.username }}"
+        uid: "{{ item.uid }}"
+        password: "{{ user_password | password_hash('sha512','saltit') }}"
+        groups: wheel
+        shell: /bin/bash
+        state: present
+      loop: "{{ users }}"
+
+    - name: upload authorized key
+      authorized_key:
+        user: "{{ item.username }}"
+        key: "{{ lookup('file', '/home/cloud_user/.ssh/id_rsa.pub') }}"
+      loop: "{{ users }}"
+
+    when:  
+    - item.uid is regex('^1') 
+    - "'webservers' in group_names"
+
+  - block:
+
+    - name: create users for webservers
+      user:
+        name: "{{ item.username }}"
+        uid: "{{ item.uid }}"
+        password: "{{ user_password | password_hash('sha512','saltit') }}"
+        groups: wheel
+        shell: /bin/bash
+        state: present
+      loop: "{{ users }}"
+
+    - name: upload authorized key
+      authorized_key:
+        user: "{{ item.username }}"
+        key: "{{ lookup('file', '/home/cloud_user/.ssh/id_rsa.pub') }}"
+      loop: "{{ users }}"
+
+    when:  
+    - item.uid is regex('^2') 
+    - "'db' in group_names"
+
+

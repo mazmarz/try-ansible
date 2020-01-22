@@ -1,0 +1,18 @@
+
+  - name: HA Proxy motd
+    copy:
+      content: "Welcome to a HAProxy server \n"
+      dest: /etc/motd
+    when: "'proxy' in group_names"
+
+  - name: db motd
+    copy:
+      content: "Welcome to a database server \n"
+      dest: /etc/motd
+    when: "'db' in group_names"
+
+  - name: webserver motd
+    copy:
+      content: "Welcome to a webserver server \n"
+      dest: /etc/motd
+    when: "'webservers' in group_names"

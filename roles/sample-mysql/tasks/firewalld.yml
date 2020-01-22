@@ -1,0 +1,12 @@
+- name: install packages
+  yum: name=firewalld state=present
+
+- name:
+  service: name=firewalld state=started
+
+- name:
+  firewalld:
+    service: mysql
+    permanent: 1
+    immediate: 1
+    state: enabled

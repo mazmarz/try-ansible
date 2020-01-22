@@ -1,0 +1,10 @@
+- hosts: all
+  vars:
+    joe: msg
+  tasks:
+
+
+  - name: Try bob
+    import_tasks: "{{ joe }}.yml"
+    vars:
+      bob: dog

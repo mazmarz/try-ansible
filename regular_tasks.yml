@@ -1,0 +1,8 @@
+- hosts: db
+  tasks:
+
+  - name: cron it
+    cron:
+      hour: 0-23
+      job: date >> /var/log/time.log
+    become: 1

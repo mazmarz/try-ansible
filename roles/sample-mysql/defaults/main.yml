@@ -1,0 +1,4 @@
+---
+# defaults file for sample-mysql
+
+bdev: /dev/nvme1n1p1

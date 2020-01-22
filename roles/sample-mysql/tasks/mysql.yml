@@ -1,0 +1,4 @@
+- name: add mysql user
+  mysql_user:
+    name: root
+    password: "{{ database_password }}"

@@ -1,0 +1,19 @@
+- hosts: all
+  become: 1
+  tasks:
+
+  - name: copy auth keys
+    authorized_key:
+      key: "{{ lookup('file','/home/cloud_user/.ssh/id_rsa.pub') }}"
+      user: automation
+
+  - name: check if sudo is installed
+    yum: 
+      name: sudo
+      state: installed
+
+  - name: fix sudo      
+    lineinfile:
+      path: /etc/sudoers
+      regexp: '^automation'
+      line: "automation ALL=ALL NOPASSWD: ALL"

@@ -1,0 +1,46 @@
+- name: ensure parted is installed
+  yum: 
+    name:
+    - parted
+    - lvm2
+    - xfsprogs
+    state: present
+
+- name:
+  debug:
+    verbosity: 1
+
+- name: partition
+  parted:
+    device: /dev/nvme1n1
+    part_start: 1MiB
+    part_end: 801MiB
+    label: gpt
+    number: 1
+    name: mysql
+    state: present
+
+- name: create vg
+  lvg:
+    vg: vg_database
+    pvs: "{{ bdev }}"
+    
+- name: create lvol
+  lvol:
+    vg: vg_database
+    lv: lv_mysql
+    size: 512
+  ignore_errors: 1
+
+- name: create filesystem
+  filesystem:
+    dev: "{{ bdev }}"
+    fstype: xfs
+
+- name: mount filesystem
+  mount:
+    path: /mnt/mysql_backups
+    src: "{{ bdev }}"
+    fstype: xfs
+    state: mounted
+

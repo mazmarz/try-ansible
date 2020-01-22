@@ -1,0 +1,6 @@
+- hosts: db
+  become:
+  tasks:
+
+  roles:
+  - sample-mysql

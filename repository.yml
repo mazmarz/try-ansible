@@ -1,0 +1,9 @@
+- hosts: all
+  tasks:
+
+  - name: add repo
+    yum_repository:
+      name: mysql56-community
+      description: "MySQL 5.6 YUM Repo"
+      baseurl: http://repo.example.com/rpms
+      enabled: 0
