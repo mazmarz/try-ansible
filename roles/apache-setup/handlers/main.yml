@@ -1,0 +1,5 @@
+---
+# handlers file for apache-setup
+#
+- listen: restart http
+  service: name=httpd state=restarted

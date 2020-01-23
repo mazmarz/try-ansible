@@ -1,0 +1,6 @@
+- hosts: webservers
+  tasks:
+
+  - name: testing the apache role
+    import_role: 
+      name: apache-setup

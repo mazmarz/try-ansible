@@ -1,6 +1,9 @@
 - hosts: db
   become:
+  vars_files:
+  - secret.yml
   tasks:
 
-  roles:
-  - sample-mysql
+  
+  - name: sample-mysql
+    import_role: name=sample-mysql

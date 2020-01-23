@@ -24,13 +24,8 @@
   lvg:
     vg: vg_database
     pvs: "{{ bdev }}"
+    state: absent
     
-- name: create lvol
-  lvol:
-    vg: vg_database
-    lv: lv_mysql
-    size: 512
-  ignore_errors: 1
 
 - name: create filesystem
   filesystem:
@@ -43,4 +38,3 @@
     src: "{{ bdev }}"
     fstype: xfs
     state: mounted
-

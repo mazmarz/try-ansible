@@ -1,0 +1,39 @@
+---
+# tasks file for apache-setup
+#
+- name: install apache
+  yum:
+    name:
+    - httpd
+    - firewalld
+    state: present
+
+- name: start the http server
+  service: name={{ item }} state=started
+  loop:
+  - httpd
+  - firewalld
+
+- name:
+  firewalld:
+    service: "{{ item }}"
+    permanent: 1
+    immediate: 1
+    state: enabled
+  loop:
+  - http
+  - https
+
+- name: get ip address of control node
+  setup: 
+  delegate_to: localhost
+  delegate_facts: 1
+
+- name: fix index file
+  template:
+    src: index.html.j2
+    dest: /var/www/html/index.html
+    owner: root
+    group: root
+    mode: 0644
+  notify: restart http

@@ -8,3 +8,6 @@
 - import_tasks: disk.yml
   tags:
   - disks
+- import_tasks: mysql.yml
+  tags:
+  - mysql

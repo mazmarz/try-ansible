@@ -1,4 +1,16 @@
+- name: mysql python lib
+  yum: 
+    name:
+    - python2-PyMySQL
+    - mariadb
+    - mariadb-server
+    state: present
+
+- name: start service
+  service: name=mariadb state=started enabled=1
+
 - name: add mysql user
   mysql_user:
+    login_unix_socket: /var/run/mysqld/mysqld.sock
     name: root
     password: "{{ database_password }}"
