@@ -1,0 +1,19 @@
+- hosts: webservers
+  become: 1
+  tasks:
+
+  - name: install required selinux package
+    yum:
+      name:
+      - selinux-policy
+      state: present
+
+  - name: run RHEL system role
+    import_role:
+      name: rhel-system-roles.selinux
+    vars:
+      selinux_policy: targeted
+      selinux_state: enforcing
+      selinux_booleans:
+        - { name: 'httpd_can_network_connect', state: 'on', persistent: 'yes' }
+

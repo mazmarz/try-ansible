@@ -1,6 +1,23 @@
+---
 - hosts: webservers
   tasks:
 
   - name: testing the apache role
     import_role: 
       name: apache-setup
+    tags:
+      apache
+
+- hosts: proxy
+  become: 1
+  tasks:
+
+  - name: setup haproxy
+    import_role: 
+      name: geerlingguy.haproxy
+    vars:
+      haproxy_backend_servers: 
+      - name: con2
+        address: 10.0.3.102
+      - name: con3
+        address: 10.0.3.103
