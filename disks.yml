@@ -1,0 +1,26 @@
+---
+- hosts: localhost
+  become: 1
+  vars:
+    disk: /dev/nvme1n1
+    remove: false
+  tasks:
+
+
+  - name: Clean up partion
+    parted:
+      device: "{{ disk }}"
+    register: part_info
+
+
+  - name: remove all partitions if remove is true
+    parted:
+      device: "{{ disk }}"
+      partition: "{{ item.num }}"
+      state: absent
+    loop: "{{ part_info.partitions }}"
+    when: remove
+
+  
+
+

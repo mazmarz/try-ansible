@@ -1,0 +1,12 @@
+---
+- hosts: all
+  become: 1
+  tasks:
+
+  - name: create server_list 
+    template:
+      src: server_list.txt.j2
+      dest: /etc/server_list.txt
+      owner: automation
+      mode: 0600
+      setype: net_conf_t

@@ -1,0 +1,14 @@
+- hosts: localhost
+  tasks:
+
+
+  - debug:
+      var: dog
+    vars:
+      dog: cat
+
+  - debug:
+      var: dog
+
+
+
