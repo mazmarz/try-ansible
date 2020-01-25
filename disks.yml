@@ -5,7 +5,7 @@
     disk: 
       dev: /dev/nvme1n1
       group: test
-      vol: "vol1,vol2"
+      vol: [vol1, vol2]
     remove: true
   tasks:
 
@@ -69,7 +69,3 @@
     - {type: 'xfs' , dev: "/dev/mapper/{{ disk.group }}-{{ disk.vol[0] }}" }
     - {type: 'xfs' , dev: "/dev/mapper/{{ disk.group }}-{{ disk.vol[1] }}" }
       
-  
-
-
-
