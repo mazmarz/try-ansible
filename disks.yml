@@ -2,14 +2,17 @@
 - hosts: localhost
   become: 1
   vars:
-    disk: /dev/nvme1n1
+    disk: 
+      dev: /dev/nvme1n1
+      group: test
+      vol: "vol1,vol2"
     remove: true
   tasks:
 
 
   - name: Clean up partion
     parted:
-      device: "{{ disk }}"
+      device: "{{ disk.dev }}"
     register: part_info
 
   - debug:
@@ -17,7 +20,7 @@
 
   - name: remove all partitions if remove is true
     parted:
-      device: "{{ disk }}"
+      device: "{{ disk.dev }}"
       number: "{{ item.num }}"
       state: absent
     loop: "{{ part_info.partitions }}"
@@ -25,7 +28,7 @@
 
   - name: create partions
     parted:
-      device: "{{ disk }}"
+      device: "{{ disk.dev }}"
       part_end: "{{ item.size  if ansible_loop.previtem is not defined else ansible_loop.previtem.size + item.size  }}MiB"
       part_start: "{{ 1 if ansible_loop.previtem is not defined else ansible_loop.previtem.size }}MiB"
       number: "{{ item.number }}"
@@ -38,6 +41,34 @@
     loop_control:
       extended: yes
 
+  - name: remove previous vg
+    lvg:
+      vg: test
+      state: absent
+      force: true
+
+  - name: create vg
+    lvg:
+      vg: test
+      pvs: "{{ disk.dev }}p1,{{ disk.dev }}p2"
+
+  - name: create lvs
+    lvol:
+      vg: test
+      lv: "{{ item.name }}"
+      size: "{{ item.size }}"
+    loop:
+    - {name: "{{ disk.vol[0] }}", size: 100 }
+    - {name: "{{ disk.vol[1] }}", size: 200 }
+
+  - name: add filesystems
+    filesystem:
+      fstype: "{{ item.type }}"
+      dev: "{{ item.dev }}"
+    loop:
+    - {type: 'xfs' , dev: "/dev/mapper/{{ disk.group }}-{{ disk.vol[0] }}" }
+    - {type: 'xfs' , dev: "/dev/mapper/{{ disk.group }}-{{ disk.vol[1] }}" }
+      
   
 
 

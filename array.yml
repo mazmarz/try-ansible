@@ -1,0 +1,8 @@
+---
+- hosts: localhost
+  vars:
+    cat: "dog,pig"
+  tasks:
+
+  - debug:
+      var: cat['0']
