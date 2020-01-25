@@ -3,7 +3,7 @@
   become: 1
   vars:
     disk: /dev/nvme1n1
-    remove: false
+    remove: true
   tasks:
 
 
@@ -12,15 +12,33 @@
       device: "{{ disk }}"
     register: part_info
 
+  - debug:
+      var: part_info
 
   - name: remove all partitions if remove is true
     parted:
       device: "{{ disk }}"
-      partition: "{{ item.num }}"
+      number: "{{ item.num }}"
       state: absent
     loop: "{{ part_info.partitions }}"
     when: remove
 
+  - name: create partions
+    parted:
+      device: "{{ disk }}"
+      part_end: "{{ item.size  if ansible_loop.previtem is not defined else ansible_loop.previtem.size + item.size  }}MiB"
+      part_start: "{{ 1 if ansible_loop.previtem is not defined else ansible_loop.previtem.size }}MiB"
+      number: "{{ item.number }}"
+      state: present
+    loop: 
+    - size: 350
+      number: 1
+    - size: 350
+      number: 2
+    loop_control:
+      extended: yes
+
   
+
 
 
