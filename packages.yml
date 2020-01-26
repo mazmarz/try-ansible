@@ -1,0 +1,9 @@
+- hosts: db
+  tasks:
+
+  - name: get packages facts
+    package_facts:
+
+  - debug:
+      var: packages.nmcli
+    when: "'NetworkManager' in packages"

@@ -1,0 +1,11 @@
+---
+- hosts: db
+  roles:
+
+  - role: rhel-system-roles.network
+
+  tasks:
+
+  - name: set hostname
+    hostname:
+      name: con4

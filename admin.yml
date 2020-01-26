@@ -1,0 +1,73 @@
+---
+- hosts: webservers
+  become: 1
+  tasks:
+
+
+  - name: create repo
+    yum_repository:
+      baseurl: https://mirror.de.leaseweb.net/epel/7/x86_64/
+      description: epel repository
+      name: epel
+      file: epel
+      gpgcheck: yes
+
+
+  - name: install key for repo
+    rpm_key:
+      key: https://getfedora.org/static/fedora.gpg
+      state: present
+
+  - name: create web group
+    group:
+      name: webadmin
+      state: present
+
+  - name: create web users
+    user:
+      name: "{{ item }}"
+      state: present
+      groups: webadmin
+    loop: [ ops1, ops2 ]
+
+- hosts: localhost 
+  vars_files:
+  - group_vars/webservers.yml
+  become: 1
+  tags:
+  - disk
+  tasks:
+
+  - name: create a list of current partitions
+    parted:
+      device: "{{ disks.device }}"
+    register: part_out
+
+  - debug:
+      var: part_out
+  
+  - name: remove partitions on disk
+    parted:
+      number: "{{ item.num }}"
+      device: "{{ disks.device }}"
+      state: absent
+    loop: "{{ part_out.partitions }}"
+
+  - name: add partions
+    parted:
+      device: "{{ disks.device }}"
+      state: present
+      number: "{{ item.num }}"
+      part_start: "{{ 1 if item.num == 1 else ansible_loop.previtem.size }}MiB"
+      part_end: "{{ item.size }}MiB"
+    loop: "{{ disks.parts }}"
+    loop_control:
+      extended: yes
+
+  - name: create a list of current partitions
+    parted:
+      device: "{{ disks.device }}"
+    register: part_out
+
+  - debug:
+      var: part_out

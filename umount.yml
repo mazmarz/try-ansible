@@ -1,0 +1,8 @@
+- hosts: local
+  tasks:
+
+  - name: remove all mounts from fstab contained vg test
+    mounted:
+      path: "{{ item }}"
+      state: absent
+    loop:

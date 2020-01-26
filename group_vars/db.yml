@@ -1,0 +1,7 @@
+---
+network_connections:
+- name: eth0
+  type: ethernet
+  ip:
+    address:
+    - 10.0.3.200/24
