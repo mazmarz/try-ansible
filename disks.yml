@@ -66,6 +66,15 @@
       fstype: "{{ item.type }}"
       dev: "{{ item.dev }}"
     loop:
-    - {type: 'xfs' , dev: "/dev/mapper/{{ disk.group }}-{{ disk.vol[0] }}" }
-    - {type: 'xfs' , dev: "/dev/mapper/{{ disk.group }}-{{ disk.vol[1] }}" }
+    - {type: 'xfs' , dev: "/dev/mapper/{{ disk.group }}-{{ disk.vol[0] }}" , dir: '/share1' }
+    - {type: 'xfs' , dev: "/dev/mapper/{{ disk.group }}-{{ disk.vol[1] }}" , dir: '/share2' }
       
+  - name: mount the new partitions
+    mount:
+      src: "{{ item.dev }}"
+      path: "{{ item.dir }}"
+      fstype: "{{ item.type }}"
+      state: mounted
+    loop:
+    - {type: 'xfs' , dev: "/dev/mapper/{{ disk.group }}-{{ disk.vol[0] }}" , dir: '/share1' }
+    - {type: 'xfs' , dev: "/dev/mapper/{{ disk.group }}-{{ disk.vol[1] }}" , dir: '/share2' }
